@@ -7,9 +7,8 @@ const db = new sqlite3.Database('database.db');
 db.serialize(function () {
     db.run('CREATE TABLE IF NOT EXISTS password_user (user_id INTEGER PRIMARY KEY AUTOINCREMENT, user_first_name TEXT, user_last_name TEXT, user_password TEXT)')
     db.run('CREATE TABLE IF NOT EXISTS password_group (group_id INTEGER PRIMARY KEY AUTOINCREMENT, group_name TEXT, group_description TEXT, user_id INTEGER, FOREIGN KEY(user_id) REFERENCES password_user(user_id))')
-    db.run('CREATE TABLE IF NOT EXISTS password (password_id INTEGER PRIMARY KEY AUTOINCREMENT, password_name TEXT, password_application TEXT, password_description TEXT, group_id INTEGER, FOREIGN KEY(group_id) REFERENCES password_group(group_id))')
+    db.run('CREATE TABLE IF NOT EXISTS password (password_id INTEGER PRIMARY KEY AUTOINCREMENT, password_text TEXT, password_application TEXT, password_description TEXT, group_id INTEGER, FOREIGN KEY(group_id) REFERENCES password_group(group_id))')
 })
-
 
 const app = express()
 
@@ -117,7 +116,7 @@ app.get('/group/user/:id_user', function (req, res) {
     })
 })
 
-app.post ('/group/:name/:description/:id_user', function (req,res){
+app.post('/group/:name/:description/:id_user', function (req,res){
     let sql = "INSERT INTO password_group (group_name, group_description, user_id) VALUES (\"" + req.params.name + "\", \"" + req.params.description + "\", " + req.params.id_user + ")"
     db.exec(sql, function (error){
         if (error===null){
@@ -160,10 +159,85 @@ app.delete('/group/:id', function (req, res){
 })
 
 app.get('/password', function(req, res){
-    
+    let sql = "SELECT password_id, password_text, password_application, password_description, group_id FROM password"
+    db.all(sql,function(err, rows){
+        if (err===null){
+            res.status(200)
+            res.send(rows)
+        }
+        else {
+            res.status(404)
+            res.send()
+        }
+    })
+})
+
+app.get('/password/:id', function(req,res){
+    let sql = "SELECT password_text, password_application, password_description, group_id FROM password WHERE password_id = " + req.params.id
+    db.all(sql,function(err, rows){
+        if (err===null){
+            res.status(200)
+            res.send(rows)
+        }
+        else {
+            res.status(404)
+            res.send()
+        }
+    })
+})
+
+app.get('/password/group/:id', function(req, res){
+    let sql = "SELECT password_id, password_text, password_application, password_description FROM password WHERE group_id = " + req.params.id
+    db.all(sql,function(err, rows){
+        if (err===null){
+            res.status(200)
+            res.send(rows)
+        }
+        else {
+            res.status(404)
+            res.send()
+        }
+    })
+})
+
+app.post('/password/:name/:application/:description/:id_group', function(req, res){
+    let sql = "INSERT INTO password(password_text, password_application, password_description, group_id) VALUES (\"" + req.params.name + "\", \""+ req.params.application + "\", \"" + req.params.description + "\", " + req.params.id_group  +")"
+    db.exec(sql, function(err){
+        if (err === null) {
+            res.status(200)
+        }
+        else {
+            res.status(404)
+        }
+        res.send()
+    })
+})
+
+app.put('/password/:id_password/:name/:application/:description/:id_group', function(req, res) {
+    let sql = "UPDATE password SET password_text = \"" + req.params.name + "\", password_application = \"" + req.params.application + "\", password_description = " + req.params.description + "\", group_id = " + req.params.id_group + " WHERE password_id = " + req.params.id_password
+    db.exec(sql, function(err){
+        if (err === null) {
+            res.status(200)
+        }
+        else {
+            res.status(404)
+        }
+        res.send()
+    })
+})
+
+app.delete('/password/:id', function(req,res) {
+    let sql = "DELETE FROM password WHERE password_id = " + req.params.id
+    db.exec(sql, function(err){
+        if (err === null) {
+            res.status(200)
+        }
+        else {
+            res.status(404)
+        }
+        res.send()
+    })
 })
 
 console.log('Server listening on port 4040')
 app.listen(4040)
-
-
