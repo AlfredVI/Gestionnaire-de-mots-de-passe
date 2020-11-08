@@ -5,7 +5,7 @@ const db = new sqlite3.Database('database.db');
 
 // Create tables if they doesn't already exist
 db.serialize(function () {
-    db.run('CREATE TABLE IF NOT EXISTS password_user (user_id INTEGER PRIMARY KEY AUTOINCREMENT, user_first_name TEXT, user_last_name TEXT, user_password TEXT)')
+    db.run('CREATE TABLE IF NOT EXISTS password_user (user_id INTEGER PRIMARY KEY AUTOINCREMENT, user_name TEXT, user_first_name TEXT, user_last_name TEXT, user_password TEXT)')
     db.run('CREATE TABLE IF NOT EXISTS password_group (group_id INTEGER PRIMARY KEY AUTOINCREMENT, group_name TEXT, group_description TEXT, user_id INTEGER, FOREIGN KEY(user_id) REFERENCES password_user(user_id))')
     db.run('CREATE TABLE IF NOT EXISTS password (password_id INTEGER PRIMARY KEY AUTOINCREMENT, password_text TEXT, password_application TEXT, password_description TEXT, group_id INTEGER, FOREIGN KEY(group_id) REFERENCES password_group(group_id))')
 })
@@ -19,9 +19,15 @@ const app = express()
     DELETE : Delete
  */
 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:8674")
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+    next()
+  });
+
 // Get all users
 app.get('/user', function(req,res){
-    db.all("SELECT user_id, user_first_name, user_last_name, user_password FROM password_user", function(err, row) {
+    db.all("SELECT user_id, user_name, user_first_name, user_last_name, user_password FROM password_user", function(err, row) {
         if (err === null) {
             res.status(200)
             res.send(row)
@@ -35,7 +41,7 @@ app.get('/user', function(req,res){
 
 // Get a specific user
 app.get('/user/:id', function(req,res) {
-    db.all("SELECT user_first_name, user_last_name, user_password FROM password_user WHERE user_id = " + req.params.id, function (err, row) {
+    db.all("SELECT user_name, user_first_name, user_last_name, user_password FROM password_user WHERE user_id = " + req.params.id, function (err, row) {
         if (err === null) {
             res.status(200)
             res.send(row)
@@ -48,16 +54,16 @@ app.get('/user/:id', function(req,res) {
 })
 
 // Add a user
-app.post('/user/:first_name/:last_name/:password', function (req, res){
-    let sql = "INSERT INTO password_user(user_first_name, user_last_name, user_password) VALUES (\"" + req.params.first_name + "\",\"" + req.params.last_name + "\",\"" + req.params.password + "\")"
+app.post('/user/:name/:first_name/:last_name/:password', function (req, res){
+    let sql = "INSERT INTO password_user(user_name, user_first_name, user_last_name, user_password) VALUES (\"" + req.params.name + "\",\"" + req.params.first_name + "\",\"" + req.params.last_name + "\",\"" + req.params.password + "\")"
     db.exec(sql)
     res.status(200)
     res.send()
 })
 
 // Modify a user
-app.put('/user/:id/:first_name/:last_name/:password', function (req, res){
-    let sql = "UPDATE password_user SET user_first_name = \"" + req.params.first_name + "\", user_last_name = \"" + req.params.last_name + "\", user_password = \"" + req.params.password + "\" WHERE user_id = " + req.params.id
+app.put('/user/:id/:name/:first_name/:last_name/:password', function (req, res){
+    let sql = "UPDATE password_user SET user_name = \"" + req.params.name + "\",user_first_name = \"" + req.params.first_name + "\", user_last_name = \"" + req.params.last_name + "\", user_password = \"" + req.params.password + "\" WHERE user_id = " + req.params.id
     db.exec(sql)
     res.status(200)
     res.send()
@@ -239,5 +245,5 @@ app.delete('/password/:id', function(req,res) {
     })
 })
 
-console.log('Server listening on port 4040')
-app.listen(4040)
+console.log('Server listening on port 8673')
+app.listen(8673)
