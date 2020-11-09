@@ -12,6 +12,9 @@
 <script>
 
 import axios from 'axios'
+import Vue from 'vue'
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies)
 
 export default {
     name: 'Authform',
@@ -25,21 +28,36 @@ export default {
     },
     methods : {
         authenticate : function() {
-            axios.get('http://localhost:8673/user')
+            axios.get('http://localhost:8673/user/in/' + this.login + "/" + this.password)
             .then(rep => {
-                let found = false
-                for(let i = 0; i < rep.data.length; i++) {
-                    if (rep.data[i].user_name == this.login && rep.data[i].user_password == this.password) {
-                        this.$router.push("/about")
-                        found = true
-                    }
+                if (rep.data.length != 0) {
+                    this.visibility = false
+                    this.$cookies.set('login', this.login)
+                    this.$cookies.set('password', this.password)
+                    this.$router.push("/about")
                 }
-                this.visibility = !found
+                else {
+                    this.visibility = true
+                }
             })
             .catch(err => {
                 console.err(err.toString())
             })
         }
-    }
+    },
+    created : function () {
+        console.log("I'm called !")
+        if (this.$cookies.isKey('login') && this.$cookies.isKey('password')) {
+             axios.get('http://localhost:8673/user/in/' + this.$cookies.get('login') + "/" + this.$cookies.get('password'))
+            .then(rep => {
+                if (rep.data.length != 0) {
+                    this.$router.push("/about")
+                }
+            })
+            .catch(err => {
+                console.err(err.toString())
+            })
+        }
+    },
 }
 </script>
