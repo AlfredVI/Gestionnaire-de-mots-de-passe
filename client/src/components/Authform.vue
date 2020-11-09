@@ -46,7 +46,6 @@ export default {
         }
     },
     created : function () {
-        console.log("I'm called !")
         if (this.$cookies.isKey('login') && this.$cookies.isKey('password')) {
              axios.get('http://localhost:8673/user/in/' + this.$cookies.get('login') + "/" + this.$cookies.get('password'))
             .then(rep => {
