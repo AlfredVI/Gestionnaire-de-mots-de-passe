@@ -34,7 +34,8 @@ export default {
                     this.visibility = false
                     this.$cookies.set('login', this.login)
                     this.$cookies.set('password', this.password)
-                    this.$router.push("/about")
+                    this.$cookies.set('id', rep.data[0]["user_id"])
+                    this.$router.push("/general")
                 }
                 else {
                     this.visibility = true
@@ -46,11 +47,14 @@ export default {
         }
     },
     created : function () {
-        if (this.$cookies.isKey('login') && this.$cookies.isKey('password')) {
+        if (this.$cookies.isKey('login') && this.$cookies.isKey('password') && this.$cookies.isKey('id')) {
              axios.get('http://localhost:8673/user/in/' + this.$cookies.get('login') + "/" + this.$cookies.get('password'))
             .then(rep => {
                 if (rep.data.length != 0) {
-                    this.$router.push("/about")
+                    this.$cookies.set('login', this.login)
+                    this.$cookies.set('password', this.password)
+                    this.$cookies.set('id', rep.data[0]["user_id"])
+                    this.$router.push("/general")
                 }
             })
             .catch(err => {

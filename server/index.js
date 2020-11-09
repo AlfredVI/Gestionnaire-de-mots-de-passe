@@ -123,7 +123,7 @@ app.get('/group/:id_group', function (req, res) {
 
 // Select all groups from a user
 app.get('/group/user/:id_user', function (req, res) {
-    let sql = "SELECT group_id, group_name, group_description, user_id from password group WHERE user_id = " + req.params.id_user
+    let sql = "SELECT group_id, group_name, group_description, user_id from password_group WHERE user_id = " + req.params.id_user
     db.all(sql, function (error, result) {
         if (error === null) {
             res.status(200)
