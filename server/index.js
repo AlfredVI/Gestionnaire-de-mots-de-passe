@@ -53,6 +53,20 @@ app.get('/user/:id', function(req,res) {
     })
 })
 
+// Indicate if a user in the database
+app.get('/user/in/:user_name/:user_password', function(req, res) {
+    db.all("SELECT user_id FROM password_user WHERE user_name = \"" + req.params.user_name + "\" AND user_password = \"" + req.params.user_password + "\"", function(err, row){
+        if (err === null) {
+            res.status(200)
+            res.send(row)
+        }
+        else {
+            res.status(404)
+            res.send("Error")
+        }
+    })
+})
+
 // Add a user
 app.post('/user/:name/:first_name/:last_name/:password', function (req, res){
     let sql = "INSERT INTO password_user(user_name, user_first_name, user_last_name, user_password) VALUES (\"" + req.params.name + "\",\"" + req.params.first_name + "\",\"" + req.params.last_name + "\",\"" + req.params.password + "\")"
