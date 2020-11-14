@@ -21,7 +21,12 @@ const routes = [
     path: '/general',
     name : 'General', 
     component : General
-  }
+  }, 
+  {
+    path: '/createGroup',
+    name: 'CreateGroup',
+    component: CreateGroup
+  } 
 ]
 
 const router = new VueRouter({

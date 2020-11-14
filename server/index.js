@@ -206,8 +206,8 @@ app.get('/password/:id', function(req,res){
     })
 })
 
-app.get('/password/group/:id', function(req, res){
-    let sql = "SELECT password_id, password_text, password_application, password_description FROM password WHERE group_id = " + req.params.id
+app.get('/password/group/:id_group', function(req, res){
+    let sql = "SELECT password_id, password_text, password_application, password_description FROM password WHERE group_id = " + req.params.id_group
     db.all(sql,function(err, rows){
         if (err===null){
             res.status(200)
