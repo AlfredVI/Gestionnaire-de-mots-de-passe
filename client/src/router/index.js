@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Authentication from '../views/Authentication.vue'
 import About from '../views/About.vue'
 import General from '../views/General.vue'
+import CreateGroup from '../views/CreateGroup.vue'
 
 Vue.use(VueRouter)
 

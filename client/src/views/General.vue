@@ -1,12 +1,10 @@
 <template>
     <div>
         <h1>Bonjour {{ first_name }} {{ last_name }}</h1>
-        <Group v-for="group in groups" :key="group" :object="group"></Group>
+        <Group class="group" v-for="(mygroup, idx) in groups" :key="idx" :object="mygroup"></Group>
         <p>
-             
-             <button v-on:click="toCreateGroup"> Créer un groupe </button>
-            
-         </p>
+            <button v-on:click="toCreateGroup"> Créer un groupe </button>
+        </p>
     </div>
 </template>
 
@@ -57,15 +55,30 @@ export default {
     },
 
     methods: {
-        toCreateGroup: function(event){
-
-
+        toCreateGroup: function(){
              this.$router.push("/createGroup")
-
+         },
+         actualize: function() {
+            console.log("toto")
+            axios.get('http://localhost:8673/group/user/' + this.$cookies.get('id'))
+            .then(rep => {
+                this.groups = rep.data
+            })
+            .catch(err => {
+                console.err(err.toString())
+            })
          }
-
     }
-
     
 }
 </script>
+
+<style>
+
+.group {
+    border : solid;
+    width : 50%;
+    margin : auto;
+}
+
+</style>
