@@ -24,7 +24,6 @@
                                 v-clipboard:success="successClipboardHandler"
                                 v-clipboard:error="errorClipboardHandler"
                                 v-on:click="delete_specific_password(password.password_id)"> 
-                                
                                 Supprimer</button> 
                     </li>
                 </ul>
@@ -89,7 +88,8 @@ export default {
             .then (rep => {
                 for(let element in rep.data) {
                     axios.delete('http://localhost:8673/password/' + element.password_id)
-                    axios.delete('http://localhost:8673/group/'+ this.group_id)
+                }
+                axios.delete('http://localhost:8673/group/'+ this.group_id)
                     .then(rep => {
                         if (rep.data.length == 0) {
                             this.$parent.actualize()
@@ -98,7 +98,6 @@ export default {
                     .catch(err => {
                         console.err(err.toString())
                     })
-                }
             })
          },
          createPassword : function() {
