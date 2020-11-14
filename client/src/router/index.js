@@ -4,6 +4,7 @@ import Authentication from '../views/Authentication.vue'
 import About from '../views/About.vue'
 import General from '../views/General.vue'
 import CreateGroup from '../views/CreateGroup.vue'
+import CreatePassword from '../views/CreatePassword.vue'
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,10 @@ const routes = [
     path: '/createGroup',
     name: 'CreateGroup',
     component: CreateGroup
+  },
+  { path: '/createPassword/:id',
+    name: 'CreatePassword',
+    component: CreatePassword
   } 
 ]
 
