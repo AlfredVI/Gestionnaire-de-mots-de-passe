@@ -2,6 +2,11 @@
     <div>
         <h1>Bonjour {{ first_name }} {{ last_name }}</h1>
         <Group v-for="group in groups" :key="group" :object="group"></Group>
+        <p>
+             
+             <button v-on:click="toCreateGroup"> Créer un groupe </button>
+            
+         </p>
     </div>
 </template>
 
@@ -49,6 +54,18 @@ export default {
         else {
             this.$router.push("/")
         }
+    },
+
+    methods: {
+        toCreateGroup: function(event){
+
+
+             this.$router.push("/createGroup")
+
+         }
+
     }
+
+    
 }
 </script>
