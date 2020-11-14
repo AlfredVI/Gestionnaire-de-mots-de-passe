@@ -21,6 +21,7 @@ const app = express()
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://localhost:8674")
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
     next()
   });
@@ -123,7 +124,7 @@ app.get('/group/:id_group', function (req, res) {
 
 // Select all groups from a user
 app.get('/group/user/:id_user', function (req, res) {
-    let sql = "SELECT group_id, group_name, group_description, user_id from password group WHERE user_id = " + req.params.id_user
+    let sql = "SELECT group_id, group_name, group_description, user_id from password_group WHERE user_id = " + req.params.id_user
     db.all(sql, function (error, result) {
         if (error === null) {
             res.status(200)
@@ -206,8 +207,8 @@ app.get('/password/:id', function(req,res){
     })
 })
 
-app.get('/password/group/:id', function(req, res){
-    let sql = "SELECT password_id, password_text, password_application, password_description FROM password WHERE group_id = " + req.params.id
+app.get('/password/group/:id_group', function(req, res){
+    let sql = "SELECT password_id, password_text, password_application, password_description FROM password WHERE group_id = " + req.params.id_group
     db.all(sql,function(err, rows){
         if (err===null){
             res.status(200)
